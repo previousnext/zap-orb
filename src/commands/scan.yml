@@ -16,6 +16,11 @@ parameters:
     description: "Image used by OWASP Zap"
     default:     "ghcr.io/zaproxy/zaproxy:stable"
 
+  slack-image:
+    type:        string
+    description: "Slack image used to post notifications"
+    default:     "ghcr.io/previousnext/zap-orb:main"
+
   slack-channel:
     type:        string
     description: "Slack channel to post notifications to"
@@ -31,11 +36,10 @@ steps:
         sudo mkdir -p $(pwd)/zap/home $(pwd)/zap/wrk
         sudo chmod -R 777 $(pwd)/zap
 
-        docker run --rm \
-	                 --network=host \
+        docker run -t \
+                   --network=host \
 	                 -v $(pwd)/zap/home:/home/zap/:rw \
 	                 -v $(pwd)/zap/wrk:/zap/wrk/:rw \
-	                 -t \
                    << parameters.owasp-zap-image >> \
 	                 << parameters.script >> \
 	                 -t "<< parameters.endpoint >>" \
@@ -55,9 +59,14 @@ steps:
   - run:
       name: "OWASP Zap: Slack Report"
       command: |
-        go run main.go --endpoint="<< parameters.endpoint >>" \
-	                     --script-name="<< parameters.script >>" \
-	                     --report-path=$(pwd)/zap/wrk/report.pdf \
-	                     --progress-path=$(pwd)/zap/home/zap_out.json \
-                       --slack-token=<< parameters.slack-token >> \
-	                     "<< parameters.slack-channel >>"
+        docker run -t \
+                   --network=host \
+	                 -v $(pwd)/zap/home:/home/zap/:rw \
+	                 -v $(pwd)/zap/wrk:/zap/wrk/:rw \
+                   << parameters.slack-image >> \
+                   --endpoint="<< parameters.endpoint >>" \
+	                 --script-name="<< parameters.script >>" \
+	                 --report-path=/zap/wrk/report.pdf \
+	                 --progress-path=/home/zap/zap_out.json \
+                   --slack-token=<< parameters.slack-token >> \
+	                 "<< parameters.slack-channel >>"
