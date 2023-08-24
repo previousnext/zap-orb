@@ -1,8 +1,8 @@
 version: 2.1
 
 description: >
-  Helper Orb for Skpr integrations with Snyk.
+  Helper Orb for integrations with OWASP Zap.
 
 display:
   home_url: "https://docs.skpr.io"
-  source_url: "https://github.com/skpr/snyk"
+  source_url: "https://github.com/previousnext/owasp-zap"
