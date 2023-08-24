@@ -1,0 +1,63 @@
+description: >
+  Scan with OWASP Zap and report results to Slack
+
+parameters:
+  endpoint:
+    type:        string
+    description: "The endpoint which will be scanned by OWASP Zap"
+
+  script:
+    type:        string
+    description: "Script which will be executed by OWASP Zap"
+    default:     "zap-baseline.py"
+
+  owasp-zap-image:
+    type:        string
+    description: "Image used by OWASP Zap"
+    default:     "ghcr.io/zaproxy/zaproxy:stable"
+
+  slack-channel:
+    type:        string
+    description: "Slack channel to post notifications to"
+
+  slack-token:
+    type:        string
+    description: "Token used to authenticate with Slack"
+
+steps:
+  - run:
+      name: "OWASP Zap: Scan"
+      command: |
+        sudo mkdir -p $(pwd)/zap/home $(pwd)/zap/wrk
+        sudo chmod -R 777 $(pwd)/zap
+
+        docker run --rm \
+	                 --network=host \
+	                 -v $(pwd)/zap/home:/home/zap/:rw \
+	                 -v $(pwd)/zap/wrk:/zap/wrk/:rw \
+	                 -t \
+                   << parameters.owasp-zap-image >> \
+	                 << parameters.script >> \
+	                 -t "<< parameters.endpoint >>" \
+	                 -J report.json \
+	                 -r report.html
+
+  - run:
+      name: "OWASP Zap: Convert Report to PDF"
+      command: |
+        docker run --rm \
+	                 -v $(pwd)/zap/wrk:/data \
+	                 --user `id -u`:`id -g` \
+	                 pandoc/latex \
+	                 report.html \
+	                 -o report.pdf
+
+  - run:
+      name: "OWASP Zap: Slack Report"
+      command: |
+        go run main.go --endpoint="<< parameters.endpoint >>" \
+	                     --script-name="<< parameters.script >>" \
+	                     --report-path=$(pwd)/zap/wrk/report.pdf \
+	                     --progress-path=$(pwd)/zap/home/zap_out.json \
+                       --slack-token=<< parameters.slack-token >> \
+	                     "<< parameters.slack-channel >>"

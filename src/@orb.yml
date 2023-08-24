@@ -1,0 +1,8 @@
+version: 2.1
+
+description: >
+  Helper Orb for Skpr integrations with Snyk.
+
+display:
+  home_url: "https://docs.skpr.io"
+  source_url: "https://github.com/skpr/snyk"
