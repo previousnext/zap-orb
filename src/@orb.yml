@@ -5,4 +5,4 @@ description: >
 
 display:
   home_url: "https://docs.skpr.io"
-  source_url: "https://github.com/previousnext/owasp-zap"
+  source_url: "https://github.com/previousnext/zap-orb"
