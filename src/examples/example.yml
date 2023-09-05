@@ -11,7 +11,7 @@ usage:
     use-my-orb:
       jobs:
         - zap/scan:
-            endpoint:      "https://www.example.com"
-            script:        "zap-baseline.py"
+            endpoint: "https://www.example.com"
+            script: "zap-baseline.py"
             slack-channel: "my-slack-channel"
-            slack-token:   $SLACK_TOKEN
+            slack-token: $SLACK_TOKEN

@@ -3,30 +3,30 @@ description: >
 
 parameters:
   endpoint:
-    type:        string
+    type: string
     description: "The endpoint which will be scanned by OWASP Zap"
 
   script:
-    type:        string
+    type: string
     description: "Script which will be executed by OWASP Zap"
-    default:     "zap-baseline.py"
+    default: "zap-baseline.py"
 
   owasp-zap-image:
-    type:        string
+    type: string
     description: "Image used by OWASP Zap"
-    default:     "ghcr.io/zaproxy/zaproxy:stable"
+    default: "ghcr.io/zaproxy/zaproxy:stable"
 
   slack-image:
-    type:        string
+    type: string
     description: "Slack image used to post notifications"
-    default:     "ghcr.io/previousnext/zap-orb:main"
+    default: "ghcr.io/previousnext/zap-orb:main"
 
   slack-channel:
-    type:        string
+    type: string
     description: "Slack channel to post notifications to"
 
   slack-token:
-    type:        string
+    type: string
     description: "Token used to authenticate with Slack"
 
 steps:
