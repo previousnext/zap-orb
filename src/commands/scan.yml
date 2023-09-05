@@ -37,36 +37,36 @@ steps:
         sudo chmod -R 777 $(pwd)/zap
 
         docker run -t \
-                   --network=host \
-                     -v $(pwd)/zap/home:/home/zap/:rw \
-                     -v $(pwd)/zap/wrk:/zap/wrk/:rw \
-                   << parameters.owasp-zap-image >> \
-                     << parameters.script >> \
-                     -t "<< parameters.endpoint >>" \
-                     -J report.json \
-                     -r report.html
+                 --network=host \
+                 -v $(pwd)/zap/home:/home/zap/:rw \
+                 -v $(pwd)/zap/wrk:/zap/wrk/:rw \
+                 << parameters.owasp-zap-image >> \
+                 << parameters.script >> \
+                 -t "<< parameters.endpoint >>" \
+                 -J report.json \
+                 -r report.html
 
   - run:
       name: "OWASP Zap: Convert  Report to PDF"
       command: |
         docker run --rm \
-                     -v $(pwd)/zap/wrk:/data \
-                     --user `id -u`:`id -g` \
-                     pandoc/latex \
-                     report.html \
-                     -o report.pdf
+                 -v $(pwd)/zap/wrk:/data \
+                 --user `id -u`:`id -g` \
+                 pandoc/latex \
+                 report.html \
+                 -o report.pdf
 
   - run:
       name: "OWASP Zap: Slack Report"
       command: |
         docker run -t \
                  --network=host \
-                     -v $(pwd)/zap/home:/home/zap/:rw \
-                     -v $(pwd)/zap/wrk:/zap/wrk/:rw \
-                   << parameters.slack-image >> \
-                   --endpoint="<< parameters.endpoint >>" \
-                     --script-name="<< parameters.script >>" \
-                     --report-path=/zap/wrk/report.pdf \
-                      --progress-path=/home/zap/zap_out.json \
-                   --slack-token=<< parameters.slack-token >> \
-                    "<< parameters.slack-channel >>"
+                 -v $(pwd)/zap/home:/home/zap/:rw \
+                 -v $(pwd)/zap/wrk:/zap/wrk/:rw \
+                 << parameters.slack-image >> \
+                 --endpoint="<< parameters.endpoint >>" \
+                 --script-name="<< parameters.script >>" \
+                 --report-path=/zap/wrk/report.pdf \
+                 --progress-path=/home/zap/zap_out.json \
+                 --slack-token=<< parameters.slack-token >> \
+                 "<< parameters.slack-channel >>"
