@@ -2,6 +2,11 @@ description: >
   Scan with OWASP Zap and report results to Slack
 
 parameters:
+  auth_header:
+    default: ""
+    type: string
+    description: "Data content for the Authorization header"
+
   endpoint:
     type: string
     description: "The endpoint which will be scanned by OWASP Zap"
@@ -40,6 +45,7 @@ steps:
                  --network=host \
                  -v $(pwd)/zap/home:/home/zap/:rw \
                  -v $(pwd)/zap/wrk:/zap/wrk/:rw \
+                 <<#parameters.auth_header>>–e ZAP_AUTH_HEADER_VALUE=<<parameters.auth_header>><</parameters.auth_header>> \
                  << parameters.owasp-zap-image >> \
                  << parameters.script >> \
                  -t "<< parameters.endpoint >>" \
