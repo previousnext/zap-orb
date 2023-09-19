@@ -49,6 +49,7 @@ steps:
                  << parameters.owasp-zap-image >> \
                  << parameters.script >> \
                  -t "<< parameters.endpoint >>" \
+                 -I \ 
                  -J report.json \
                  -r report.html
 
