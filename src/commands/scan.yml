@@ -45,7 +45,7 @@ steps:
                  --network=host \
                  -v $(pwd)/zap/home:/home/zap/:rw \
                  -v $(pwd)/zap/wrk:/zap/wrk/:rw \
-                 <<#parameters.auth_header>>–e ZAP_AUTH_HEADER_VALUE=<<parameters.auth_header>><</parameters.auth_header>> \
+                 <<#parameters.auth_header>>-e ZAP_AUTH_HEADER_VALUE=<<parameters.auth_header>><</parameters.auth_header>> \
                  << parameters.owasp-zap-image >> \
                  << parameters.script >> \
                  -t "<< parameters.endpoint >>" \
